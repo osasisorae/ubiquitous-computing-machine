@@ -42,40 +42,35 @@ function Home() {
   const classes = useStyles();
   const history = useNavigate();
   const [user, setUser] = useState(null);
-  const [projects, setProjects] = useState([]);
 
   useEffect(() => {
-    // Fetch projects data
-    fetch("https://srunning-octo-portfolio.vercel.app/api/v1/projects/")
-      .then((res) => res.json())
-      .then((data) => {
-        setProjects(data);
+    
+    // Check local storage for token
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      // Use token to get user data
+      fetch("http://127.0.0.1:8000/api/v1/user/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-      .catch(error => console.error(error));
+        .then((res) => res.json())
+        .then((data) => {
+          setUser(data);
+        })
+        .catch(error => console.error(error));
+    }
+  }, []);
 
-  // Check local storage for token
-  const token = localStorage.getItem("accessToken");
-  if (token) {
-    // Use token to get user data
-    console.log(token)
-    fetch("https://srunning-octo-portfolio.vercel.app/api/v1/user/", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setUser(data);
-      })
-      .catch(error => console.error(error));
-  }
-}, []);
-
-const handleLogout = () => {
-  // Remove token from local storage and set user state to null
-  localStorage.removeItem('accessToken');
+  const handleLogout = () => {
+    // Remove token from local storage and set user state to null
+    localStorage.removeItem('accessToken');
     history('/login');
-};
+  };
+
+  const handleLessonPlan = () => {
+    history("/glp");
+  };
 
   return (
     <div className={classes.root}>
@@ -87,13 +82,15 @@ const handleLogout = () => {
             title={user.first_name + " " + user.last_name}
             subheader={user.email}
           />
+          <Button variant="contained" color="primary" onClick={handleLogout}>
+              Logout
+            </Button>
           <CardContent>
             <Typography variant="h5" component="h2">
-              About - Osarenren (Osas) Isorae - <a href="https://www.linkedin.com/in/osarenren-isorae/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-
+              Welcome to alis, the robot teacher.
             </Typography>
             <Typography variant="body1" component="p">
-            I am an AI software engineer, writer, and manager with a passion for revolutionizing education. My goal is to streamline the teaching process, enhance learning resources, and empower educators. I have extensive experience with scikit-image, spaCy, PyTorch, Scikit-Learn, TensorFlow, Keras, NumPy, Pandas, XGBoost, and Amazon S3. Additionally, I have worked as a Python Django Developer at eHealth4everyone and as a Lead Python Data Scientist at filerskeepers, where I gained experience with OCR, Google Trans API, marketing management, technical writing, software troubleshooting, DevOps, team management, data visualization, technical support, NLP, machine learning, API development, SEO, agile methodologies, GCP, SaaS, Selenium WebDriver, Flask, web scraping, data science, Django REST Framework, Postman API, AWS, and MongoDB. I am also well-versed in project management, diversity and inclusion, interview preparation, B2B marketing, social media marketing, and social engineering.
+              Supports education by teaching both teachers and students, grading assignments, providing lesson plans and resources, and handling administrative tasks.
             </Typography>
             <Divider className={classes.projectsHeader} />
             <Typography
@@ -101,36 +98,50 @@ const handleLogout = () => {
               component="h2"
               className={classes.projectsHeader}
             >
-              Projects
+              About the Builders
             </Typography>
             <List>
-              {projects &&
-                projects.map((project) => (
-                  <ListItem key={project.id}>
-                    <ListItemAvatar>
-                      <Avatar>{project.title.charAt(0)}</Avatar>
-                    </ListItemAvatar>
-                    
-                    <Link to={`/projects/${project.id}`}>
-                      <ListItemText
-                        primary={project.title}
-                        secondary={
-                          "From " +
-                          new Date(project.start_date).toLocaleDateString() +
-                          " to " +
-                          new Date(project.end_date).toLocaleDateString()
-                        }
-                      />
-                    </Link>
-                  </ListItem>
-                ))}
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar>OI</Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary="Osarenren Isorae"
+                  secondary="Lead Software Engineer"
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar>YL</Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary="Yanru Liu"
+                  secondary="Lead Product Designer"
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar>YL</Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary="Yujie Liu"
+                  secondary="Lead UX Designer"
+                />
+              </ListItem>
             </List>
-
-            <Button variant="contained" color="secondary" onClick={handleLogout}>
-              Logout
-            </Button>
           </CardContent>
-        </Card>
+
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="h2">
+              Generate Lesson Plan - Beta!
+            </Typography>
+            <Button variant="contained" color="primary" onClick={handleLessonPlan}>
+              Start
+            </Button>
+          </CardContent>          
+          </Card>
+
+          
       ) : (
         <>
         <Button

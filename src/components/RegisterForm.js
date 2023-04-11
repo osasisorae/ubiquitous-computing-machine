@@ -34,7 +34,7 @@ const RegisterForm = () => {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      await axios.post('https://srunning-octo-portfolio.vercel.app/api/v1/register/', formData);
+      await axios.post('http://127.0.0.1:8000/api/v1/register/', formData);
       history('/login');
     } catch (error) {
       console.error(error);

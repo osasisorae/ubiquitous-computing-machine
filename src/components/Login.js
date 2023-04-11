@@ -14,7 +14,7 @@ const Login = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    axios.post('https://srunning-octo-portfolio.vercel.app/api/v1/login/', formData)
+    axios.post('http://127.0.0.1:8000/api/v1/login/', formData)
       .then((response) => {
         localStorage.setItem('accessToken', response.data.access);
         history('/');
